@@ -1,6 +1,9 @@
 <template>
   <div class="home">
-    <v-main>
+    <div class="progress">
+      <Progress />
+   </div>
+    <v-main v-if="!loading">
       <div class="header-toy">
          <h2 class="text-listado">Listado de Juguetes</h2>
          <v-btn class="ml-5" color="green" @click.prevent="addToy">Agregar</v-btn>
@@ -14,29 +17,48 @@
             <v-card-text><span>Stock: </span>{{toy.data.stock}}</v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="red" @click.prevent="login">Eliminar</v-btn>
-                <v-btn color="yellow" @click.prevent="login">Editar</v-btn>
+                <v-btn color="red"  @click.prevent="eliminar(toy.id)">Eliminar</v-btn>
+                <v-btn color="yellow" @click.prevent="editar(toy)">Editar</v-btn>
             </v-card-actions>
           </v-card>
         </v-col>
       </v-row>
     </v-main>
+    <Modal />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import {mapActions,mapState} from 'vuex'
-
+import Modal from '@/components/Modal'
+import Progress from '@/components/Progress'
 export default {
   name: 'Home',
+  components:{
+    Modal,
+    Progress
+  },
   computed:{
-    ...mapState(["toys"])
+    ...mapState(["toys","add_edit", "loading"])
   },
   methods:{
-    ...mapActions(["getToys"]),
+    ...mapActions(["getToys", "addEdit", "btnAddEdit", "openDialog", "agregarMensaje","agregarId", "agregarToy"]),
     addToy(){
+      this.addEdit("Agregando juguete")
+      this.btnAddEdit("Agregar")
       this.$router.push('/addToy')
+    },
+    editar(toy){
+       this.agregarToy(toy)
+       this.addEdit("Editar juguete")
+       this.btnAddEdit("Editar")
+       this.$router.push('/addToy')
+    },
+    eliminar(id){
+      this.agregarId(id)
+      this.agregarMensaje("Eliminar")
+      this.openDialog(true)
     }
   },
   created(){
@@ -51,10 +73,16 @@ export default {
   }
   .text-listado{
     text-align: center;
+    color: white;
   }
 
   .header-toy{
     display: flex;
     justify-content: center;
+  }
+  .progress{
+    display:flex;
+    justify-content:center;
+    align-items: center;
   }
 </style>

@@ -1,5 +1,5 @@
-<template>
-  <v-app>
+<template >
+  <v-app >
     <v-app-bar
       app
       color="dark"
@@ -27,7 +27,7 @@
       </v-btn>
     </v-app-bar>
 
-    <v-main >
+    <v-main class="background-app">
       <router-view></router-view>
     </v-main>
   </v-app>
@@ -46,10 +46,14 @@ export default {
     ...mapState(['currentUser'])
   },
   methods:{
-    ...mapActions(["updateUser"]),
+    ...mapActions(["updateUser","getToys","agregarToy", "agregarMensaje","agregarId","loadingLogin"]),
     logout(){
       firebase.auth().signOut().then(() => {
           this.updateUser(null)
+          this.agregarToy("")
+          this.agregarMensaje("")
+          this.agregarId("")
+          this.loadingLogin(false)
           this.$router.push('/login')
     })
   }
@@ -63,5 +67,10 @@ export default {
   }
   .text-user{
     color: lawngreen;
+  }
+
+  .background-app{
+    background-color: #091c02;
+
   }
 </style>
